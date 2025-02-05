@@ -1,0 +1,44 @@
+<!-- main.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <h1>Welcome to Your Dashboard</h1>
+    <p>You are logged in.</p>
+
+    <!-- Navigation buttons -->
+    <div class="button-container">
+        <button onclick="redirectToPage('dailyLog')">Daily Log</button>
+        <button onclick="redirectToPage('goals')">Goals</button>
+        <button onclick="redirectToPage('comparison')">Comparison</button>
+        <button onclick="redirectToPage('help')">Help</button>
+    </div>
+    
+    <!-- Logout button -->
+    <div class="logout-container">
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function logout() {
+            // Call API to log the user out
+            fetch('/logout', {
+                method: 'POST',
+            })
+            .then(() => {
+                window.location.href = '/login'; // Redirect to login page
+            });
+        }
+
+        function redirectToPage(page) {
+            // Logic to redirect to different pages
+            window.location.href = `/${page}`;
+        }
+    </script>
+</body>
+</html>

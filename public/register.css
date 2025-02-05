@@ -1,0 +1,75 @@
+/* Register Page Styling */
+body {
+  background-color: #121212;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Add gap between form fields */
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+  display: block;
+  text-align: left;
+}
+
+input {
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background-color: #333;
+  border: 1px solid #555;
+  color: #fff;
+  border-radius: 4px;
+  width: 100%;
+}
+
+button {
+  padding: 0.75rem;
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+/* Back to Login button styling */
+.back-btn {
+  background-color: #555; /* Gray color for differentiation */
+  margin-top: 10px;
+}
+
+.back-btn:hover {
+  background-color: #777;
+}

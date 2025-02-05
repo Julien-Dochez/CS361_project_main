@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Fitness App</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>My Fitness App</h1>
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="usernameOrEmail">Username or Email:</label>
+            <input type="text" id="usernameOrEmail" name="usernameOrEmail" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="extra-buttons">
+            <button class="signup-btn" onclick="redirectToSignUp()">Create Account</button>
+            <button class="forgot-btn" onclick="forgotPassword()">Forgot Password?</button>
+        </div>
+    </div>
+    
+    <script src="login.js"></script>
+</body>
+</html>

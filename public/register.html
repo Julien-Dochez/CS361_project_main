@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="register.css"> <!-- Linking the CSS -->
+</head>
+<body>
+  <div class="container">
+    <!-- Place "Create an Account" heading above the form fields -->
+    <h2>Create an Account</h2>
+
+    <!-- Form to register a new user -->
+    <form id="registerForm" action="/signup" method="POST">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      
+      <!-- Added email input field -->
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      
+      <!-- Create Account button -->
+      <button type="submit">Create Account</button>
+    </form>
+
+    <!-- Back to Login button -->
+    <button onclick="redirectToLogin()" class="back-btn">Back to Login</button>
+  </div>
+
+  <script>
+    // JavaScript to handle form submission
+    document.getElementById("registerForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;  // Capture the email value
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch('/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password }),  // Include email in the request
+        });
+
+        if (response.ok) {
+          alert('Account created successfully');
+          window.location.href = '/login'; // Redirect to login page
+        } else {
+          const message = await response.text();
+          alert('Error: ' + message);
+        }
+      } catch (err) {
+        alert('Error creating account: ' + err.message);
+      }
+    });
+
+    // Function to redirect back to the login page
+    function redirectToLogin() {
+      window.location.href = '/login';
+    }
+  </script>
+</body>
+</html>
