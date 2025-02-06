@@ -1,4 +1,6 @@
 // Import necessary modules
+require('dotenv').config();
+
 const express = require('express');
 const pg = require('pg');
 const bcrypt = require('bcrypt'); // To hash and compare passwords
@@ -12,10 +14,10 @@ const port = 3000;
 
 // Database connection
 const pool = new pg.Pool({
-  user: 'postgres',
+  user: process.env.DB_USER,
   host: 'localhost',
   database: 'myfitness',
-  password: 'crusader', // Update with your actual password
+  password: process.env.DB_PASSWORD,
   port: 5432,
 });
 
@@ -34,8 +36,8 @@ app.use(session({
 const transporter = nodemailer.createTransport({
   service: 'gmail', // or use another email provider
   auth: {
-    user: 'myFitnessAppCreator@gmail.com', // your email address
-    pass: 'dknw kikj xtlz apdx' // your email password or app password if using Gmail
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, 
   }
 });
 
