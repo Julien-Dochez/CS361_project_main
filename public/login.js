@@ -33,3 +33,45 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 function redirectToSignUp() {
     window.location.href = '/register';  // Redirect to the register page
 }
+
+function forgotPassword() {
+    window.location.href = "password.html";
+}
+
+function showHelpPopup() {
+    document.getElementById('helpPopup').style.display = 'block';
+}
+
+function toggleHelpPopup() {
+    const popup = document.getElementById('helpPopup');
+    if (popup.style.display === 'block') {
+        popup.style.display = 'none';
+    } else {
+        popup.style.display = 'block';
+    }
+}
+
+function closeHelpPopup() {
+    document.getElementById('helpPopup').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener for closing the popup when clicking outside of it
+    window.addEventListener('click', function(event) {
+        const popup = document.getElementById('helpPopup');
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener for closing the popup when clicking outside of it
+    window.addEventListener('click', function(event) {
+        const popup = document.getElementById('helpPopup');
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
+});

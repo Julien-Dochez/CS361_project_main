@@ -4,6 +4,8 @@ const pg = require('pg');
 const bcrypt = require('bcrypt'); // To hash and compare passwords
 const session = require('express-session'); // For session-based authentication
 const path = require('path');
+const nodemailer = require('nodemailer'); // Import Nodemailer
+const crypto = require('crypto'); // For generating a secure random reset code
 
 const app = express();
 const port = 3000;
@@ -27,6 +29,15 @@ app.use(session({
   resave: false, 
   saveUninitialized: false, // Avoid creating empty sessions
 }));
+
+// Create a reusable transporter using the default SMTP transport
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // or use another email provider
+  auth: {
+    user: 'myFitnessAppCreator@gmail.com', // your email address
+    pass: 'dknw kikj xtlz apdx' // your email password or app password if using Gmail
+  }
+});
 
 
 // Serve static files from the 'public' folder
@@ -158,6 +169,119 @@ app.post('/logout', (req, res) => {
     }
     res.redirect('/login');
   });
+});
+
+
+// Route to send password reset code
+app.post('/send-reset-code', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if email exists in the database
+    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (user.rows.length === 0) {
+      return res.status(400).json({ success: false, message: 'Email not found' });
+    }
+
+    // Generate a random reset code (you can adjust length as needed)
+    const resetCode = crypto.randomBytes(3).toString('hex'); // 6-character hex code
+
+    // Store the reset code and associate it with the user in the database (you can expire it after a period)
+    await pool.query('UPDATE users SET reset_code = $1 WHERE email = $2', [resetCode, email]);
+
+    // Send email with the reset code
+    const mailOptions = {
+      from: 'myFitnessAppCreator@gmail.com',
+      to: email,
+      subject: 'Password Reset Code',
+      text: `Your password reset code is: ${resetCode}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error); // Log the error
+        return res.status(500).json({ success: false, message: 'Error sending email' });
+      }
+      console.log('Email sent:', info.response); // Log the success response
+      res.status(200).json({ success: true, message: 'Reset code sent successfully' });
+    });
+  } catch (err) {
+    console.error('Error sending reset code:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+// Route to verify reset code and allow password reset
+app.post('/reset-password', async (req, res) => {
+  const { email, resetCode, newPassword } = req.body;
+
+  try {
+    // Check if the reset code matches the stored code for the user
+    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (user.rows.length === 0) {
+      console.error('Email not found');
+      return res.status(400).json({ success: false, message: 'Email not found' });
+    }
+
+    if (user.rows[0].reset_code !== resetCode) {
+      console.error('Invalid reset code');
+      return res.status(400).json({ success: false, message: 'Invalid reset code' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the password in the database
+    await pool.query('UPDATE users SET password = $1 WHERE email = $2', [hashedPassword, email]);
+
+    // Clear the reset code (optional)
+    await pool.query('UPDATE users SET reset_code = NULL WHERE email = $1', [email]);
+
+    res.status(200).json({ success: true, message: 'Password reset successfully' });
+  } catch (err) {
+    console.error('Error resetting password:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+// Serve password reset page explicitly
+app.get('/password-reset', (req, res) => {
+  res.sendFile(path.join(publicPath, 'password-reset.html'));
+});
+
+// Route to send username
+app.post('/send-username', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if email exists in the database
+    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (user.rows.length === 0) {
+      return res.status(400).json({ success: false, message: 'Email not found' });
+    }
+
+    const username = user.rows[0].username;
+
+    // Send email with the username
+    const mailOptions = {
+      from: 'myFitnessAppCreator@gmail.com',
+      to: email,
+      subject: 'Your Username',
+      text: `Your username is: ${username}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error); // Log the error
+        return res.status(500).json({ success: false, message: 'Error sending email' });
+      }
+      console.log('Email sent:', info.response); // Log the success response
+      res.status(200).json({ success: true, message: 'Username sent successfully' });
+    });
+  } catch (err) {
+    console.error('Error sending username:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
 });
 
 // Start the server

@@ -67,3 +67,44 @@ button {
 button:hover {
     opacity: 0.8;
 }
+
+/* Add CSS for the help button and popup */
+.help-btn {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0ad4e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.help-popup {
+    display: none;
+    position: fixed;
+    top: 20%; /* Position higher up on the screen */
+    left: 50%;
+    transform: translate(-50%, -20%); /* Center horizontally and position higher */
+    width: 800px; /* Increase width to make the box wider */
+    background-color: grey; /* Change background color to grey */
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.help-popup-content {
+    padding: 20px;
+}
+
+.close-btn {
+    float: right;
+    font-size: 24px; /* Increase font size to make it bigger */
+    cursor: pointer;
+    color: #ccc; /* Make the default color lighter */
+    transition: color 0.3s, transform 0.3s; /* Add transition for smooth hover effect */
+}
+
+.close-btn:hover {
+    color: red; /* Change color to red on hover */
+    transform: scale(1.2); /* Slightly enlarge on hover */
+}
