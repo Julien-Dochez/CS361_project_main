@@ -22,15 +22,15 @@
         <div class="extra-buttons">
             <button class="signup-btn" onclick="redirectToSignUp()">Create Account</button>
             <button class="forgot-btn" onclick="forgotPassword()">Forgot Username / Password?</button>
-            <button class="help-btn" onclick="toggleHelpPopup()">Help</button> <!-- Use toggleHelpPopup function -->
+            <button class="help-btn" onclick="showHelpPopup()">Help</button>
         </div>
     </div>
 
-    <!-- Help Popup -->
-    <div id="helpPopup" class="help-popup">
+    <!-- Help Popup Modal -->
+    <div id="helpPopup" class="help-popup" style="display: none;">
         <div class="help-popup-content">
             <span class="close-btn" onclick="closeHelpPopup()">&times;</span>
-            <p>Here is some helpful information about using the My Fitness App! <br>
+            <p>Here is some helpful information about the dashboard! <br>
                First time here? Feel free to make an account using the 'Create Account Button'. <br>
                For returning users, enter your username or email, and password to login and see your dashboard. <br>
                If you have forgotten your password, click on 'Forgot Password' and you will be able to change it! <br>

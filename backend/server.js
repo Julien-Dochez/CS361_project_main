@@ -129,38 +129,15 @@ app.get('/main', (req, res) => {
   if (!req.session.username) {
     return res.redirect('/login');
   }
-  res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Main Page</title>
-        <link rel="stylesheet" href="main.css">
-    </head>
-    <body>
-        <h1>Welcome to Your Dashboard</h1>
-        <p>Hello, ${req.session.username}!</p> <!-- Display the username -->
-        <div class="button-container">
-            <button onclick="window.location.href='/daily-log'">Daily Log</button>
-            <button onclick="window.location.href='/goals'">Goals</button>
-            <button onclick="window.location.href='/comparison'">Comparison</button>
-            <button onclick="window.location.href='/help'">Help</button>
-        </div>
-        <div class="logout-container">
-            <button onclick="logout()">Logout</button>
-        </div>
-        <script>
-            function logout() {
-                fetch('/logout', { method: 'POST' })
-                .then(() => {
-                    window.location.href = '/login';
-                });
-            }
-        </script>
-    </body>
-    </html>
-  `);
+  res.sendFile(path.join(publicPath, 'main.html'));
+});
+
+// New endpoint to fetch user data
+app.get('/user-info', (req, res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: 'Not logged in' });
+  }
+  res.json({ username: req.session.username });
 });
 
 // Logout route
