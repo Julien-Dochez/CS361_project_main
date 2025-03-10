@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6200ea;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        .back-btn {
+            background-color: #555;
+            margin-top: 10px;
+        }
+        .back-btn:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Feedback Form</h2>
+        <form id="feedbackForm">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <textarea id="feedback" name="feedback" rows="4" placeholder="Your Feedback" required></textarea>
+            <button type="submit">Submit</button>
+            <button type="button" class="back-btn" onclick="goBack()">Back</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('feedbackForm').addEventListener('submit', async function(event) {
+          event.preventDefault();
+          
+          const name = document.getElementById('name').value;
+          const email = document.getElementById('email').value;
+          const feedback = document.getElementById('feedback').value;
+      
+          try {
+            const response = await fetch('/submit-feedback', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, feedback: feedback })
+            });
+      
+            const result = await response.json();
+            alert(result.message); // Show success/error message
+      
+            if (response.ok) {
+              document.getElementById('feedbackForm').reset(); // Clear form on success
+            }
+          } catch (err) {
+            console.error('Submission failed:', err);
+            alert('Failed to submit feedback. Please try again.');
+          }
+        });
+      
+        function goBack() {
+          window.location.href = '/main';
+        }
+      </script>
+
+</body>
+</html>

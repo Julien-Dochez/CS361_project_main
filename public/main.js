@@ -21,6 +21,7 @@ function redirectToPage(page) {
     window.location.href = `/${page}`;
 }
 
+
 document.addEventListener('DOMContentLoaded', function() {
     // Add event listener for closing the popup when clicking outside of it
     window.addEventListener('click', function(event) {
