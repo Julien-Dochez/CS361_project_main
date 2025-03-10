@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Log</title>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="daily-log.css">
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='/main'">← Back</button>
+    <div id="formContainer">
+        <input type="text" id="activityText" placeholder="Enter your activity">
+        <button onclick="logActivity()">Log Activity</button>
+    </div>
+    <div id="calendar"></div>
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <script>
+        let activities = JSON.parse(localStorage.getItem('activities')) || [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                dateClick: (info) => showActivities(info.dateStr),
+                events: activities.map(activity => ({
+                    title: activity.text,
+                    date: activity.date
+                }))
+            });
+            calendar.render();
+        });
+
+        function logActivity() {
+            const today = new Date().toISOString().split('T')[0];
+            const activityText = document.getElementById('activityText').value;
+
+            if (!activityText) return alert('Please enter an activity');
+
+            // Save to localStorage
+            activities.push({ text: activityText, date: today });
+            localStorage.setItem('activities', JSON.stringify(activities));
+
+            // Reload the page to update the calendar
+            location.reload();
+            alert('Activity logged for today!');
+        }
+
+        function showActivities(date) {
+            const daysActivities = activities
+                .filter(a => a.date === date)
+                .map(a => a.text)
+                .join('\n');
+
+            alert(`Activities for ${date}:\n${daysActivities}`);
+        }
+    </script>
+</body>
+</html>

@@ -22,6 +22,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const feedbackSocket = new zmq.Push();
 feedbackSocket.connect('tcp://localhost:5555'); // Connect to microservice
+const dailyLogSocket = new zmq.Push();
+dailyLogSocket.connect('tcp://localhost:5556');
 
 app.post('/submit-feedback', async (req, res) => {
   try {
@@ -48,6 +50,78 @@ app.use(session({
     resave: false,
     saveUninitialized: false, // Avoid creating empty sessions
 }));
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+app.use('/daily-log', createProxyMiddleware({
+    target: 'http://localhost:3002', // Updated port
+    changeOrigin: true,
+    pathRewrite: { '^/daily-log': '' }
+  }));
+
+app.post('/api/log-activity', async (req, res) => {
+    if (!req.session.username) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+      // Get user ID from session
+      const userResult = await pool.query(
+        'SELECT id FROM users WHERE username = $1',
+        [req.session.username]
+      );
+      
+      const user_id = userResult.rows[0].id;
+      const { date, activity } = req.body;
+  
+      // Send via ZeroMQ to microservice
+      await dailyLogSocket.send(JSON.stringify({
+        action: 'log',
+        user_id,
+        date,
+        activity
+      }));
+      
+      res.status(201).json({ message: 'Activity logged successfully' });
+    } catch (err) {
+      console.error('Error logging activity:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+  // Get calendar data endpoint
+  app.get('/api/calendar-activities', async (req, res) => {
+    if (!req.session.username) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+      const userResult = await pool.query(
+        'SELECT id FROM users WHERE username = $1',
+        [req.session.username]
+      );
+      
+      const user_id = userResult.rows[0].id;
+      const { date } = req.query;
+  
+      // Proxy request to daily log service
+      const response = await axios.get('http://localhost:3001/api/calendar', {
+        params: { user_id, date }
+      });
+      
+      res.json(response.data);
+    } catch (err) {
+      console.error('Error fetching calendar data:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+app.use('/goals', createProxyMiddleware({
+    target: 'http://localhost:3003',
+    changeOrigin: true,
+    pathRewrite: { '^/goals': '' }
+}));
+
 
 // Serve static files from the 'public' folder
 const publicPath = path.join(__dirname, '..', 'public'); // Adjusted path
@@ -128,12 +202,28 @@ app.get('/feedback', (req, res) => {
 });
 
 // New endpoint to fetch user data
+// In server.js
 app.get('/user-info', (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({ error: 'Not logged in' });
+    if (req.session.username) {
+      // Fetch the user ID from the database using the session username
+      pool.query(
+        'SELECT id FROM users WHERE username = $1',
+        [req.session.username],
+        (err, result) => {
+          if (err) {
+            res.status(500).json({ error: 'Database error' });
+          } else {
+            res.json({ 
+              username: req.session.username,
+              userId: result.rows[0].id // Add this line
+            });
+          }
+        }
+      );
+    } else {
+      res.status(401).json({ error: 'Not authenticated' });
     }
-    res.json({ username: req.session.username });
-});
+  });
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -174,7 +264,7 @@ app.post('/send-reset-code', async (req, res) => {
             service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                pass: process.env.EMAIL_APP_PASS,
             },
         });
 
@@ -253,7 +343,7 @@ app.post('/send-username', async (req, res) => {
             service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                pass: process.env.EMAIL_APP_PASS,
             },
         });
 

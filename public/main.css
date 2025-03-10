@@ -1,83 +1,105 @@
-/* main.css */
-
-/* Body and Background */
-body {
-    background-color: #1c1c1c; /* Dark background */
-    color: #f0f0f0; /* Light text color for contrast */
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height */
+/* CSS Variables for Consistent Theming */
+:root {
+    --primary-color: #66c2ff; /* Light Blue */
+    --accent-color: #6a1b9a; /* Deep Purple */
+    --background-dark: #121212;
+    --background-light: #1a1a1a;
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: #444;
+    --shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+    --transition: all 0.3s ease;
 }
 
-/* Header and Text */
+/* Full-Screen Layout */
+body {
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Section */
+header {
+    padding: 20px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
 h1 {
-    color: #00bfff; /* Light blue color for the header */
-    margin-top: 50px;
+    color: var(--primary-color);
+    font-size: 2.2em;
+    margin-bottom: 15px;
 }
 
 p {
+    color: var(--text-muted);
     font-size: 1.2em;
-    margin: 20px 0;
-    font-weight: bold;
-    color: #90ee90; /* Lighter green color for the greeting */
+    margin: 15px 0 30px;
 }
 
-/* Button Container for Navigation buttons */
-.button-container {
+/* Main Content Container */
+main {
+    flex: 1;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: 15px; /* Space between buttons */
-    margin-top: 30px;
+    max-width: 1200px;
     width: 100%;
-    max-width: 600px; /* Optional: Limit max width for buttons */
+    margin: 0 auto;
 }
 
-/* All buttons styling */
+/* Navigation Buttons */
+.button-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px 0;
+}
+
 button {
-    background-color: #ff6347; /* Tomato red color */
-    color: #fff; /* White text color */
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
     border: none;
-    padding: 12px 25px;
-    font-size: 1.2em;
+    padding: 18px;
+    font-size: 1.1em;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.2s;
-    width: 100%; /* Make buttons take up full width of their container */
+    transition: var(--transition);
+    box-shadow: var(--shadow);
 }
 
 button:hover {
-    background-color: #ff4500; /* Darker shade of red on hover */
-    transform: scale(1.05); /* Slight zoom effect on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 194, 255, 0.4);
 }
 
-/* Logout button container */
+button:active {
+    transform: translateY(0);
+}
+
+/* Logout Button */
 .logout-container {
-    margin-top: 30px; /* Space between main buttons and logout */
-    width: 100%; /* Make sure it stretches across the width */
-    max-width: 600px; /* Optional: Limit max width for logout */
+    margin-top: auto;
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
 }
 
 .logout-container button {
-    background-color: #008CBA; /* Blue color for the logout button */
-    width: 100%; /* Ensure the button fills the container */
+    background: var(--accent-color);
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1em;
 }
 
-/* Help Button Styling */
-.button-container button:last-child {
-    background-color: #ff6347; 
-}
-
-.button-container button:last-child:hover {
-    background-color: #ff4500; 
-}
-
-/* Help Popup Styling - Dark Theme */
+/* Help Popup Styling */
 .help-popup {
     display: none;
     position: fixed;
@@ -86,41 +108,53 @@ button:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Darker semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .help-popup-content {
-    background-color: #2c2c2c; /* Dark background */
-    color: #ffffff; /* Bright white text for clarity */
-    padding: 20px;
-    border-radius: 8px;
-    width: 70%;
-    max-width: 950px;
-    text-align: left;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
-    font-family: Arial, sans-serif;
+    background: var(--background-light);
+    color: var(--text-color);
+    padding: 30px;
+    border-radius: 12px;
+    width: min(95%, 1100px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .help-popup-content p {
-    color: #dcdcdc; /* Light gray for a softer look */
+    color: var(--text-muted);
     font-size: 1.1em;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
-
 .close-btn {
-    color: #bbb; /* Light gray close button */
+    color: var(--text-color);
     float: right;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 26px;
     cursor: pointer;
+    transition: var(--transition);
 }
 
 .close-btn:hover {
-    color: red;
-    transform: scale(1.2); /* Makes it 20% bigger */
-    transition: transform 0.2s ease, color 0.2s ease; /* Smooth transition */
+    color: #ff4444;
+    transform: rotate(90deg);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    .button-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    button {
+        padding: 16px;
+        font-size: 1em;
+    }
 }

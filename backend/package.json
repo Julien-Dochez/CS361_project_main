@@ -9,6 +9,7 @@
     "express-session": "^1.18.1",
     "google-auth-library": "^9.15.1",
     "googleapis": "^146.0.0",
+    "http-proxy-middleware": "^3.0.3",
     "nodemailer": "^6.10.0",
     "pg": "^8.13.3",
     "zeromq": "^6.3.0"

@@ -18,9 +18,20 @@ function logout() {
 
 // Function to redirect to a specific page
 function redirectToPage(page) {
-    window.location.href = `/${page}`;
-}
-
+    switch(page) {
+      case 'dailyLog':
+        window.location.href = '/daily-log'; // Your microservice's route
+        break;
+      case 'goals':
+        window.location.href = '/goals';
+        break;
+      case 'feedback':
+        window.location.href = '/feedback';
+        break;
+      default:
+        console.error('Unknown page:', page);
+    }
+  }
 
 document.addEventListener('DOMContentLoaded', function() {
     // Add event listener for closing the popup when clicking outside of it

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Goal Tracker</title>
+    <link rel="stylesheet" href="../daily-log.css">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: #00B5D8;
+            border-bottom: 2px solid #00B5D8;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        input#newGoal {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #333;
+            color: white;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #00B5D8;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background: #008FB2;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .goal-list {
+            margin-top: 20px;
+        }
+
+        .goal-item {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .goal-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 0 10px rgba(0,181,210,0.3);
+        }
+
+        .goal-date {
+            color: #00B5D8;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='/main'">← Back</button>
+    
+    <div class="container">
+        <h2>My Goals</h2>
+        
+        <div class="input-group">
+            <input type="text" id="newGoal" placeholder="What's your goal today?">
+            <button onclick="saveGoal()">Save</button>
+        </div>
+
+        <div class="goal-list" id="goalList">
+            <!-- Goals will appear here -->
+        </div>
+    </div>
+
+    <script>
+        let goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+        function saveGoal() {
+            const goalText = document.getElementById('newGoal').value.trim();
+            if (!goalText) return alert('Please enter a goal');
+
+            const newGoal = {
+                text: goalText,
+                date: new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })
+            };
+
+            goals.push(newGoal);
+            localStorage.setItem('goals', JSON.stringify(goals));
+            document.getElementById('newGoal').value = '';
+            renderGoals();
+        }
+
+        function renderGoals() {
+            const list = document.getElementById('goalList');
+            list.innerHTML = '';
+            
+            if (goals.length === 0) {
+                list.innerHTML = '<div class="goal-item">No goals set yet</div>';
+                return;
+            }
+
+            goals.slice().reverse().forEach(goal => {
+                const div = document.createElement('div');
+                div.className = 'goal-item';
+                div.innerHTML = `
+                    <span class="goal-date">${goal.date}</span>
+                    ${goal.text}
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Initial render
+        renderGoals();
+    </script>
+</body>
+</html>

@@ -1,85 +1,140 @@
+/* CSS Variables for Theming */
+:root {
+    --primary-color: #66c2ff; /* Light Blue */
+    --accent-color: #4da3e0;
+    --input-highlight: #6a1b9a; /* Purple highlight */
+    --background-dark: #121212;
+    --background-light: #1a1a1a;
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: #444;
+    --shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+    --transition: all 0.3s ease;
+    --input-font-size: 16px; /* New variable for input text size */
+    --label-font-size: 15px; /* New variable for label size */
+}
+
 /* General Page Styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #121212; /* Dark background */
-    color: #ffffff; /* Light text for contrast */
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    line-height: 1.6;
 }
 
 /* Login Container */
 .login-container {
-    background: #1e1e1e; /* Darker gray for contrast */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
-    width: 300px;
+    background: var(--background-light);
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    width: min(90%, 380px);
     text-align: center;
 }
 
-/* Title */
+/* Title Styling */
+h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
 h2 {
+    font-size: 1.6em;
     margin-bottom: 20px;
-    color: #ffffff;
+    color: var(--text-color);
+}
+
+h2::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: var(--primary-color);
+    margin: 10px auto 0;
+    border-radius: 2px;
 }
 
 /* Input Fields */
-input[type="text"], input[type="password"] {
+input[type="text"],
+input[type="password"] {
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #333;
-    color: #ffffff;
+    padding: 15px;
+    margin: 12px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #222;
+    color: var(--text-color);
+    font-size: 15px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+input:focus {
+    border-color: var(--input-highlight);
+    outline: none;
+    box-shadow: 
+        0 0 0 2px var(--input-highlight),
+        0 0 12px rgba(106, 27, 154, 0.4);
 }
 
 /* Buttons */
 button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
+    width: 250px;
+    padding: 14px 0;
+    margin: 8px auto;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600; /* Increased font weight for better contrast */
+    transition: var(--transition);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: block;
+    text-align: center;
+    background-color: var(--primary-color);
+    color: #003366; /* Dark navy blue text for better readability */
 }
 
-.login-btn {
-    background-color: #007bff;
-    color: white;
-}
-
-.signup-btn {
-    background-color: #28a745;
-    color: white;
-}
-
-.forgot-btn {
-    background-color: #ffc107;
-    color: black;
-}
-
-/* Button Hover Effects */
 button:hover {
-    opacity: 0.8;
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Add CSS for the help button and popup */
+button:active {
+    transform: translateY(0);
+}
+
+
+/* Button Container */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Bottom Text */
+.login-container > p {
+    font-size: 1em;
+    color: var(--text-muted);
+    margin-top: 20px;
+}
+
+/* Help Button */
 .help-btn {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f0ad4e;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: var(--primary-color);
+    font-size: 14px;
+    border-radius: 6px;
 }
 
-/* Help Popup Styling - Dark Theme */
+/* Help Popup */
 .help-popup {
     display: none;
     position: fixed;
@@ -88,41 +143,73 @@ button:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Darker semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .help-popup-content {
-    background-color: #2c2c2c; /* Dark background */
-    color: #ffffff; /* Bright white text for clarity */
-    padding: 20px;
-    border-radius: 8px;
-    width: 70%;
-    max-width: 850px;
+    background-color: #2c2c2c;
+    color: var(--text-color);
+    padding: 30px;
+    border-radius: 10px;
+    width: min(90%, 700px);
     text-align: left;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
-    font-family: Arial, sans-serif;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .help-popup-content p {
-    color: #dcdcdc; /* Light gray for a softer look */
-    font-size: 1.1em;
-    line-height: 1.5;
+    color: #dcdcdc;
+    font-size: 1em;
+    line-height: 1.6;
 }
 
-
 .close-btn {
-    color: #bbb; /* Light gray close button */
+    color: var(--text-color);
     float: right;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 300;
     cursor: pointer;
+    transition: var(--transition);
 }
 
 .close-btn:hover {
-    color: red;
-    transform: scale(1.2); /* Makes it 20% bigger */
-    transition: transform 0.2s ease, color 0.2s ease; /* Smooth transition */
+    color: #ff4444;
+    transform: rotate(90deg);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        padding: 12px;
+    }
+
+    button {
+        width: 220px;
+        padding: 12px 0;
+    }
+}
+
+/* Form field labels */
+label {
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: left;
+    color: var(--text-color); /* Full white instead of muted */
+    font-weight: 500; /* Better readability */
 }
