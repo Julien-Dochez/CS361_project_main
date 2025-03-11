@@ -1,10 +1,9 @@
-// feedback-service.js
 require('dotenv').config();
 const zmq = require('zeromq');
 const nodemailer = require('nodemailer');
 
 async function runReceiver() {
-  const sock = new zmq.Pull(); // Pull socket for receiving messages
+  const sock = new zmq.Pull(); 
   await sock.bind('tcp://*:5555');
   console.log('Feedback microservice listening on port 5555');
 
@@ -39,7 +38,6 @@ function sendMail(data) {
     text: `Name: ${data.name}\nEmail: ${data.email}\nFeedback: ${data.feedback}`,
   };
 
-  // Log mailOptions to verify all fields
   console.log(mailOptions);
 
   return transporter.sendMail(mailOptions);

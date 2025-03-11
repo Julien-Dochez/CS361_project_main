@@ -21,9 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const feedbackSocket = new zmq.Push();
-feedbackSocket.connect('tcp://localhost:5555'); // Connect to microservice
-const dailyLogSocket = new zmq.Push();
-dailyLogSocket.connect('tcp://localhost:5556');
+feedbackSocket.connect('tcp://localhost:5555'); //feedback
 
 app.post('/submit-feedback', async (req, res) => {
   try {
@@ -44,17 +42,16 @@ const pool = new pg.Pool({
     port: 5432,
 });
 
-// Session setup with PostgreSQL-backed storage
 app.use(session({
     secret: process.env.SESSION_SECRET || 'secretkey',
     resave: false,
-    saveUninitialized: false, // Avoid creating empty sessions
+    saveUninitialized: false, 
 }));
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 app.use('/daily-log', createProxyMiddleware({
-    target: 'http://localhost:3002', // Updated port
+    target: 'http://localhost:3002',
     changeOrigin: true,
     pathRewrite: { '^/daily-log': '' }
   }));
@@ -74,7 +71,6 @@ app.post('/api/log-activity', async (req, res) => {
       const user_id = userResult.rows[0].id;
       const { date, activity } = req.body;
   
-      // Send via ZeroMQ to microservice
       await dailyLogSocket.send(JSON.stringify({
         action: 'log',
         user_id,
@@ -116,17 +112,9 @@ app.post('/api/log-activity', async (req, res) => {
     }
   });
 
-app.use('/goals', createProxyMiddleware({
-    target: 'http://localhost:3003',
-    changeOrigin: true,
-    pathRewrite: { '^/goals': '' }
-}));
-
-
 // Serve static files from the 'public' folder
 const publicPath = path.join(__dirname, '..', 'public'); // Adjusted path
 app.use(express.static(publicPath));
-console.log('Serving static files from:', publicPath);
 
 // Default route - Redirect to login page
 app.get('/', (req, res) => {
@@ -188,6 +176,13 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.use('/goals', createProxyMiddleware({
+    target: 'http://localhost:3003',
+    changeOrigin: true,
+    pathRewrite: { '^/goals': '' }
+}));
+
+
 // Main page route (for authenticated users)
 app.get('/main', (req, res) => {
     if (!req.session.username) {
@@ -198,7 +193,7 @@ app.get('/main', (req, res) => {
 
 // Route to serve the feedback form
 app.get('/feedback', (req, res) => {
-  res.sendFile(path.join(publicPath, 'feedback.html')); // Adjust the path to your feedback form HTML
+  res.sendFile(path.join(publicPath, 'feedback.html')); 
 });
 
 // New endpoint to fetch user data

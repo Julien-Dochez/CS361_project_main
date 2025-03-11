@@ -5,7 +5,7 @@ const pg = require('pg');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
-const port = process.env.LOGIN_PORT || 3001;
+const port = 3001;
 
 // Database connection
 const pool = new pg.Pool({

@@ -32,7 +32,7 @@
             margin: 20px 0;
         }
 
-        input#newGoal {
+        input#goalInput {
             flex: 1;
             padding: 12px;
             border: none;
@@ -69,6 +69,9 @@
             margin: 10px 0;
             border-radius: 8px;
             transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .goal-item:hover {
@@ -82,6 +85,19 @@
             margin-bottom: 5px;
             display: block;
         }
+
+        .goal-actions button {
+            margin-left: 10px;
+            background: none;
+            border: none;
+            color: #00B5D8;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .goal-actions button:hover {
+            color: #008FB2;
+        }
     </style>
 </head>
 <body>
@@ -91,8 +107,8 @@
         <h2>My Goals</h2>
         
         <div class="input-group">
-            <input type="text" id="newGoal" placeholder="What's your goal today?">
-            <button onclick="saveGoal()">Save</button>
+            <input type="text" id="goalInput" placeholder="What's your goal today?">
+            <button id="saveButton" onclick="handleSave()">Save</button>
         </div>
 
         <div class="goal-list" id="goalList">
@@ -102,24 +118,48 @@
 
     <script>
         let goals = JSON.parse(localStorage.getItem('goals')) || [];
+        let editIndex = -1; // Track edit mode
 
-        function saveGoal() {
-            const goalText = document.getElementById('newGoal').value.trim();
-            if (!goalText) return alert('Please enter a goal');
+        function handleSave() {
+            const input = document.getElementById('goalInput');
+            const text = input.value.trim();
+            
+            if (!text) return alert('Please enter a goal');
 
-            const newGoal = {
-                text: goalText,
-                date: new Date().toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                })
-            };
+            if (editIndex === -1) { // Add mode
+                const newGoal = {
+                    text,
+                    date: new Date().toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })
+                };
+                goals.push(newGoal);
+            } else { // Edit mode
+                goals[editIndex].text = text;
+                editIndex = -1;
+                document.getElementById('saveButton').textContent = 'Save';
+            }
 
-            goals.push(newGoal);
             localStorage.setItem('goals', JSON.stringify(goals));
-            document.getElementById('newGoal').value = '';
+            input.value = '';
             renderGoals();
+        }
+
+        function editGoal(index) {
+            editIndex = index;
+            const goalText = goals[index].text;
+            document.getElementById('goalInput').value = goalText;
+            document.getElementById('saveButton').textContent = 'Update';
+        }
+
+        function deleteGoal(index) {
+            if (confirm('Are you sure you want to delete this goal?')) {
+                goals.splice(index, 1);
+                localStorage.setItem('goals', JSON.stringify(goals));
+                renderGoals();
+            }
         }
 
         function renderGoals() {
@@ -131,12 +171,18 @@
                 return;
             }
 
-            goals.slice().reverse().forEach(goal => {
+            goals.slice().reverse().forEach((goal, index) => {
                 const div = document.createElement('div');
                 div.className = 'goal-item';
                 div.innerHTML = `
-                    <span class="goal-date">${goal.date}</span>
-                    ${goal.text}
+                    <div>
+                        <span class="goal-date">${goal.date}</span>
+                        ${goal.text}
+                    </div>
+                    <div class="goal-actions">
+                        <button onclick="editGoal(${goals.length - index - 1})">✏️</button>
+                        <button onclick="deleteGoal(${goals.length - index - 1})">🗑️</button>
+                    </div>
                 `;
                 list.appendChild(div);
             });
